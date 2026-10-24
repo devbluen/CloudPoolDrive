@@ -85,6 +85,17 @@ between the installed and the portable versions.
 > The executable is not code-signed. On first launch Windows SmartScreen may show "Windows protected your
 > PC". Click **More info → Run anyway**.
 
+### Tests and GitHub Actions
+
+`npm test` runs the core tests against a simulated Google Drive API (no Google account needed).
+
+The workflow [`.github/workflows/build.yml`](.github/workflows/build.yml) runs the tests and builds the
+installer and the portable executable. It runs **only on pull requests** and when you start it manually in
+**Actions → Build → Run workflow**. The executables are attached to the run as an artifact.
+
+To publish a release, start it manually and tick **Publish a GitHub release**. The release is tagged with the
+`version` from `package.json` (e.g. `v1.0.0`), so bump the version before each new release.
+
 ### Shortcuts
 
 | Action | What it does |

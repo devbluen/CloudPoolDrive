@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
+    "test": "node test/pool.test.js",
     "icon": "electron scripts/make-icon.js",
     "build": "electron-builder --win nsis portable",
     "build:installer": "electron-builder --win nsis",

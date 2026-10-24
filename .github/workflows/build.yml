@@ -1,0 +1,103 @@
+name: Build
+
+# Runs only on pull requests and when started manually from the Actions tab.
+# A manual run can also publish the built executables as a GitHub release.
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish a GitHub release with the built executables
+        type: boolean
+        default: false
+      prerelease:
+        description: Mark the release as a pre-release (only used when publishing)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  # New pushes to a PR cancel the previous run; manual runs (which may publish) are never cancelled.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Test and build (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build installer and portable executable
+        # --publish never: releases are created by the release job below, never by electron-builder.
+        run: npm run build -- --publish never
+        env:
+          # No code-signing certificate: skip looking for one.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload executables
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloud-pool-driver-windows
+          path: dist/*.exe
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Publish GitHub release
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Download executables
+        uses: actions/download-artifact@v4
+        with:
+          name: cloud-pool-driver-windows
+          path: dist
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          tag="v$version"
+
+          if gh release view "$tag" > /dev/null 2>&1; then
+            echo "::error::Release $tag already exists. Bump \"version\" in package.json before publishing again."
+            exit 1
+          fi
+
+          flags=()
+          if [ "$PRERELEASE" = "true" ]; then
+            flags+=(--prerelease)
+          fi
+
+          gh release create "$tag" dist/*.exe \
+            --target "$GITHUB_SHA" \
+            --title "Cloud Pool Driver $tag" \
+            --generate-notes \
+            "${flags[@]}"
+
+          echo "Published $tag: $(gh release view "$tag" --json url --jq .url)" >> "$GITHUB_STEP_SUMMARY"

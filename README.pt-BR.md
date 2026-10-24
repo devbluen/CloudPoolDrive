@@ -85,6 +85,17 @@ valendo entre a versão instalada e a portátil.
 > O executável não é assinado digitalmente. Na primeira execução, o Windows SmartScreen pode avisar
 > "O Windows protegeu o computador". Clique em **Mais informações → Executar assim mesmo**.
 
+### Testes e GitHub Actions
+
+`npm test` roda os testes do núcleo contra uma API do Google Drive simulada (não precisa de conta Google).
+
+O workflow [`.github/workflows/build.yml`](.github/workflows/build.yml) roda os testes e gera o instalador e a
+versão portátil. Ele roda **só em pull requests** e quando você inicia manualmente em
+**Actions → Build → Run workflow**. Os executáveis ficam anexados à execução como artefato.
+
+Para publicar uma release, inicie manualmente e marque **Publish a GitHub release**. A release recebe a tag da
+`version` do `package.json` (ex.: `v1.0.0`), então aumente a versão antes de cada nova release.
+
 ### Atalhos
 
 | Ação | O que faz |
