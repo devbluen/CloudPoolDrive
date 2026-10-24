@@ -283,7 +283,7 @@ function createWindow() {
     height: 780,
     minWidth: 820,
     minHeight: 520,
-    title: 'Cloud Pool Driver',
+    title: 'Cloud Pool Drive',
     backgroundColor: '#0f1320',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

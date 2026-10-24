@@ -1,4 +1,4 @@
-# Cloud Pool Driver
+# Cloud Pool Drive
 
 [English](README.md) · **Português**
 
@@ -10,7 +10,7 @@ Os arquivos que **já existiam em cada conta também aparecem**.
 A interface está disponível em **português e inglês**. O idioma é escolhido automaticamente pelo idioma do
 Windows e pode ser trocado a qualquer momento no seletor da barra lateral.
 
-![Cloud Pool Driver](screenshots/cloud-pool-driver-files-pt.png)
+![Cloud Pool Drive](screenshots/cloud-pool-drive-files-pt.png)
 
 ## Como funciona
 
@@ -29,13 +29,13 @@ O Google exige que todo programa que acessa o Drive tenha uma credencial própri
 Você cria a sua de graça. **O próprio programa mostra esses passos na primeira vez que abre, com um botão
 que leva direto para cada página.**
 
-1. **Criar um projeto**: abra <https://console.cloud.google.com/projectcreate>, digite `Cloud Pool Driver`
+1. **Criar um projeto**: abra <https://console.cloud.google.com/projectcreate>, digite `Cloud Pool Drive`
    em "Nome do projeto" e clique em **Criar**. Confira se o projeto novo ficou selecionado no topo da página.
 2. **Ativar a Google Drive API**: abra <https://console.cloud.google.com/apis/library/drive.googleapis.com>
    e clique em **Ativar**.
 3. **Configurar a tela de login**: abra <https://console.cloud.google.com/auth/overview> e clique em
    **Começar** (Get started). Preencha o assistente **até o fim**:
-   - **Informações do app**: nome `Cloud Pool Driver` e seu e-mail em "E-mail para suporte do usuário". **Próxima**.
+   - **Informações do app**: nome `Cloud Pool Drive` e seu e-mail em "E-mail para suporte do usuário". **Próxima**.
    - **Público-alvo**: **Externo**. **Próxima**.
    - **Dados de contato**: seu e-mail. **Próxima**.
    - **Concluir**: marque que concorda com a política, clique em **Continuar** e depois em **Criar**.
@@ -74,12 +74,12 @@ npm start
 | Comando | O que gera (em `dist/`) |
 |---|---|
 | `npm run build` | Instalador **e** versão portátil |
-| `npm run build:installer` | `CloudPoolDriver-Setup-<versão>.exe`: instalador com atalho na Área de Trabalho e no Menu Iniciar |
-| `npm run build:portable` | `CloudPoolDriver-Portable-<versão>.exe`: um único .exe, roda sem instalar |
+| `npm run build:installer` | `CloudPoolDrive-Setup-<versão>.exe`: instalador com atalho na Área de Trabalho e no Menu Iniciar |
+| `npm run build:portable` | `CloudPoolDrive-Portable-<versão>.exe`: um único .exe, roda sem instalar |
 | `npm run build:dir` | Só a pasta `dist/win-unpacked/` (mais rápido, bom para testar) |
 | `npm run icon` | Regera o ícone `build/icon.png` |
 
-Os dados (credenciais, contas e idioma) ficam em `%APPDATA%\cloud-pool-driver`, então a configuração continua
+Os dados (credenciais, contas e idioma) ficam em `%APPDATA%\cloud-pool-drive`, então a configuração continua
 valendo entre a versão instalada e a portátil.
 
 > O executável não é assinado digitalmente. Na primeira execução, o Windows SmartScreen pode avisar
@@ -125,7 +125,7 @@ Para publicar uma release, inicie manualmente e marque **Publish a GitHub releas
 - Formulários, Sites e outros tipos de arquivo do Google que não podem ser exportados aparecem na lista, mas
   não podem ser baixados.
 - Contas conectadas antes desta versão precisam ser **reconectadas** uma vez (o app mostra o botão Reconectar).
-- Se você desconectar uma conta, os arquivos dela continuam no Drive, mas somem do Cloud Pool Driver até você
+- Se você desconectar uma conta, os arquivos dela continuam no Drive, mas somem do Cloud Pool Drive até você
   conectá-la de novo.
 - Mover arquivos entre pastas ainda não é suportado.
 

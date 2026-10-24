@@ -4,7 +4,7 @@ const { app, safeStorage } = require('electron');
 
 const file = name => path.join(app.getPath('userData'), name);
 const DATA_FILES = ['credentials.json', 'accounts.json', 'settings.json'];
-const LEGACY_DIRS = ['drive-unificado']; // data folders used by earlier names of the app
+const LEGACY_DIRS = ['cloud-pool-driver', 'drive-unificado']; // data folders used by earlier names of the app
 
 // Copies settings from an earlier app name's data folder, once, if this one is still empty.
 function migrateLegacyData() {

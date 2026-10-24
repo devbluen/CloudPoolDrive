@@ -54,7 +54,7 @@ jobs:
       - name: Upload executables
         uses: actions/upload-artifact@v4
         with:
-          name: cloud-pool-driver-windows
+          name: cloud-pool-drive-windows
           path: dist/*.exe
           if-no-files-found: error
           retention-days: 14
@@ -73,7 +73,7 @@ jobs:
       - name: Download executables
         uses: actions/download-artifact@v4
         with:
-          name: cloud-pool-driver-windows
+          name: cloud-pool-drive-windows
           path: dist
 
       - name: Create release
@@ -96,7 +96,7 @@ jobs:
 
           gh release create "$tag" dist/*.exe \
             --target "$GITHUB_SHA" \
-            --title "Cloud Pool Driver $tag" \
+            --title "Cloud Pool Drive $tag" \
             --generate-notes \
             "${flags[@]}"
 

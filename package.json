@@ -1,8 +1,8 @@
 {
-  "name": "cloud-pool-driver",
+  "name": "cloud-pool-drive",
   "version": "1.0.0",
   "description": "Junta várias contas do Google Drive em um único armazenamento",
-  "author": "Cloud Pool Driver",
+  "author": "Cloud Pool Drive",
   "main": "src/main.js",
   "private": true,
   "scripts": {
@@ -15,8 +15,8 @@
     "build:dir": "electron-builder --win dir"
   },
   "build": {
-    "appId": "local.cloudpooldriver",
-    "productName": "Cloud Pool Driver",
+    "appId": "local.cloudpooldrive",
+    "productName": "Cloud Pool Drive",
     "directories": {
       "buildResources": "build",
       "output": "dist"
@@ -34,11 +34,11 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Cloud Pool Driver",
-      "artifactName": "CloudPoolDriver-Setup-${version}.${ext}"
+      "shortcutName": "Cloud Pool Drive",
+      "artifactName": "CloudPoolDrive-Setup-${version}.${ext}"
     },
     "portable": {
-      "artifactName": "CloudPoolDriver-Portable-${version}.${ext}"
+      "artifactName": "CloudPoolDrive-Portable-${version}.${ext}"
     }
   },
   "dependencies": {
