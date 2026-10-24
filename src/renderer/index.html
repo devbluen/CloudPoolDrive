@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+  <title>Cloud Pool Driver</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- data-i18n sets textContent, data-i18n-html sets trusted markup from i18n.js, data-i18n-title sets title. -->
+
+  <!-- First run: OAuth client credentials -->
+  <section id="setup" class="setup" hidden>
+    <div class="setup-card">
+      <div class="setup-top">
+        <div class="brand big"><span class="logo"></span><span data-i18n="appName"></span></div>
+        <select class="lang-select" data-lang-select></select>
+      </div>
+      <p class="muted guide-intro" data-i18n="guideIntro"></p>
+
+      <!-- Step-by-step guide, rendered by renderGuide() in app.js -->
+      <div class="stepper" id="stepper"></div>
+      <div class="step-label" id="stepLabel"></div>
+      <h2 class="step-title" id="stepTitle"></h2>
+      <div class="step-body" id="stepBody"></div>
+      <button id="stepLink" class="btn primary wide">
+        <span data-i18n="openInGoogle"></span>
+        <svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>
+      </button>
+
+      <div id="credsForm" hidden>
+        <button id="importCreds" class="btn primary wide" data-i18n="importJson"></button>
+        <div class="or"><span data-i18n="orPaste"></span></div>
+        <label>Client ID<input id="clientId" spellcheck="false" placeholder="xxxx.apps.googleusercontent.com"></label>
+        <label>Client Secret<input id="clientSecret" spellcheck="false" type="password"></label>
+      </div>
+
+      <div class="guide-nav">
+        <button id="stepBack" class="btn ghost" data-i18n="back"></button>
+        <button id="cancelSetup" class="btn ghost" data-i18n="cancel" hidden></button>
+        <span class="spacer"></span>
+        <button id="skipToEnd" class="btn ghost" data-i18n="haveJson"></button>
+        <button id="stepNext" class="btn" data-i18n="next"></button>
+        <button id="saveCreds" class="btn primary" data-i18n="save" hidden></button>
+      </div>
+    </div>
+  </section>
+
+  <div id="app" class="layout" hidden>
+    <aside class="sidebar">
+      <div class="brand"><span class="logo"></span><span data-i18n="appName"></span></div>
+
+      <div class="total">
+        <div class="total-label" data-i18n="totalStorage"></div>
+        <div class="total-value" id="totalValue">—</div>
+        <div class="stackbar" id="stackbar"></div>
+        <div class="muted small" id="totalFree"></div>
+      </div>
+
+      <div class="nav">
+        <button class="nav-item" id="navFiles">
+          <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span data-i18n="myStorage"></span>
+        </button>
+        <button class="nav-item" id="navTrash">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+          <span data-i18n="trash"></span>
+          <span class="nav-meta" id="trashSize"></span>
+        </button>
+      </div>
+
+      <div class="section-title"><span data-i18n="accounts"></span> <span class="count" id="accountCount"></span></div>
+      <ul class="accounts" id="accounts"></ul>
+      <button id="addAccount" class="btn primary wide">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="addAccount"></span>
+      </button>
+
+      <div class="spacer"></div>
+      <div class="sidebar-foot">
+        <label class="lang-row">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <select class="lang-select" data-lang-select></select>
+        </label>
+        <button id="openSettings" class="btn ghost wide small-btn">
+          <svg viewBox="0 0 24 24"><path d="M15 7a4 4 0 1 0-3.9 5L4 19v2h3v-2h2v-2h2l1.9-1.9A4 4 0 0 0 15 7z"/><circle cx="15.5" cy="6.5" r="1"/></svg><span data-i18n="googleCredentials"></span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="toolbar">
+        <nav class="crumbs" id="crumbs"></nav>
+        <div class="actions">
+          <button class="btn icon" id="refresh" data-i18n-title="refresh"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8M21 3v5h-5"/></svg></button>
+          <button class="btn danger" id="emptyTrash" hidden><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg><span data-i18n="emptyTrash"></span></button>
+          <button class="btn" id="newFolder"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM12 10v6M9 13h6"/></svg><span data-i18n="newFolder"></span></button>
+          <button class="btn" id="uploadFolder"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM12 16v-6M9 12.5 12 10l3 2.5"/></svg><span data-i18n="uploadFolder"></span></button>
+          <button class="btn primary" id="uploadFiles"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg><span data-i18n="uploadFiles"></span></button>
+        </div>
+      </header>
+
+      <div class="selectionbar" id="selectionbar" hidden>
+        <span id="selCount"></span>
+        <button class="btn small-btn" id="selDownload"><svg viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg><span data-i18n="download"></span></button>
+        <button class="btn small-btn" id="selRename"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/></svg><span data-i18n="rename"></span></button>
+        <button class="btn small-btn" id="selRestore" hidden><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg><span data-i18n="restore"></span></button>
+        <button class="btn small-btn danger" id="selDeleteForever" hidden><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg><span data-i18n="deleteForever"></span></button>
+        <button class="btn small-btn danger" id="selDelete"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg><span data-i18n="delete"></span></button>
+        <button class="btn ghost small-btn" id="selClear" data-i18n="clearSelection"></button>
+      </div>
+
+      <div class="listwrap" id="listwrap">
+        <table class="files">
+          <thead>
+            <tr>
+              <th class="col-check"><input type="checkbox" class="check" id="checkAll" data-i18n-title="selectAll"></th>
+              <th data-i18n="colName"></th>
+              <th class="col-size" data-i18n="colSize"></th>
+              <th class="col-acc" data-i18n="colAccount"></th>
+              <th class="col-date" data-i18n="colModified"></th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="empty" id="empty" hidden></div>
+        <div class="loading" id="loading" hidden><div class="spinner"></div></div>
+      </div>
+
+      <section class="transfers" id="transfers" hidden>
+        <header class="transfers-head" id="transfersHead">
+          <svg class="chev" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg>
+          <span id="transfersTitle"></span>
+          <div class="progress slim"><div id="transfersBar"></div></div>
+          <button class="btn ghost small-btn" id="clearTransfers" data-i18n="clearFinished"></button>
+        </header>
+        <ul class="transfer-list" id="transferList"></ul>
+      </section>
+
+      <div class="dropzone" id="dropzone" hidden>
+        <div><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg><p id="dropText"></p></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-back" id="modal" hidden>
+    <form class="modal" id="modalForm">
+      <h3 id="modalTitle"></h3>
+      <p id="modalText" class="muted"></p>
+      <input id="modalInput" spellcheck="false">
+      <div class="row-end">
+        <button type="button" class="btn ghost" id="modalCancel" data-i18n="cancel"></button>
+        <button type="submit" class="btn primary" id="modalOk">OK</button>
+      </div>
+    </form>
+  </div>
+
+  <ul class="ctxmenu" id="ctxmenu" hidden></ul>
+  <div class="toasts" id="toasts"></div>
+
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

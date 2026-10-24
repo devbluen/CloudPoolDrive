@@ -1,0 +1,50 @@
+{
+  "name": "cloud-pool-driver",
+  "version": "1.0.0",
+  "description": "Junta várias contas do Google Drive em um único armazenamento",
+  "author": "Cloud Pool Driver",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "icon": "electron scripts/make-icon.js",
+    "build": "electron-builder --win nsis portable",
+    "build:installer": "electron-builder --win nsis",
+    "build:portable": "electron-builder --win portable",
+    "build:dir": "electron-builder --win dir"
+  },
+  "build": {
+    "appId": "local.cloudpooldriver",
+    "productName": "Cloud Pool Driver",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/icon.png",
+      "signAndEditExecutable": true
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Cloud Pool Driver",
+      "artifactName": "CloudPoolDriver-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "CloudPoolDriver-Portable-${version}.${ext}"
+    }
+  },
+  "dependencies": {
+    "google-auth-library": "^11.3.1"
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3"
+  }
+}
